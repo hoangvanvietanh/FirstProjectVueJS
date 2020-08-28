@@ -5,8 +5,8 @@
     </li>
     <li
       class="page-item"
-      v-for="index in user.myPost.length / 4"
-      v-bind:key="index"
+      v-for="index in numberOfPages"
+      v-bind:key="index "
       v-on:click="setActivePaginate(index)"
       v-bind:class="{active: selectedPagination === index}"
     >
@@ -40,11 +40,20 @@ export default {
       }
     },
     setRightPaginate: function () {
-      if (this.$parent.selectedPagination < this.user.myPost.length / 4) {
+      if (this.$parent.selectedPagination < this.user.list_posts.length / 4) {
         this.$parent.selectedPagination++;
       }
     },
   },
+  computed:{
+    numberOfPages(){
+      console.log(this.user.list_posts.length)
+      if(this.user.list_posts.length < 4){
+        return 1;
+      }
+        return this.user.list_posts.length / 4;
+    }
+  }
 };
 </script>
 <style>

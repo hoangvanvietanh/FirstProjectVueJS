@@ -15,14 +15,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(user, index) in user.myPartner" v-bind:key="index">
-          <td scope="row">{{user.userId}}</td>
+        <tr v-for="(user, index) in user.list_collaborators" v-bind:key="index">
+          <td scope="row">{{user.id}}</td>
           <td>{{user.username}}</td>
-          <td>{{user.fullName}}</td>
-          <td>{{user.birthDate}}</td>
+          <td>{{user.name}}</td>
+          <td>{{user.birth_day}}</td>
           <td>{{user.email}}</td>
           <td>{{user.role}}</td>
-          <td><button type="button" v-on:click="deletePartner(user.userId)" class="btn btn-danger">x</button></td>
+          <td><button type="button" v-on:click="deletePartner(user.id)" class="btn btn-danger">x</button></td>
         </tr>
       </tbody>
     </table>
@@ -35,9 +35,9 @@ export default {
     user: Object
   },
   methods:{
-    deletePartner:function(userId){
-      console.log(userId);
-        this.$emit('deletePartner', userId);
+    deletePartner:function(id){
+      console.log(id);
+        this.$emit('deletePartner', id);
     }
   }
 };

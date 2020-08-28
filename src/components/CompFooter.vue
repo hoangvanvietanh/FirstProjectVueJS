@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <div class="fixed-bottom custom-background-color titleCenter footer">© 2020 Lampart Co.Ltd</div>
+    <div>© 2020 Lampart Co.Ltd</div>
   </div>
 </template>
 <script>
@@ -9,16 +9,11 @@ export default {
 };
 </script>
 <style>
-.custom-background-color {
-  background: #28353b;
-  color: #9ca6ac !important;
-}
-.titleCenter {
-  text-align: center;
-}
 .footer {
+  width: 100%;
   height: 60px !important;
-  padding: 10px;
-  font-size: 15px;
+  background-color: #28353b;
+  text-align: center;
+  color: #9ca6ac !important;
 }
 </style>

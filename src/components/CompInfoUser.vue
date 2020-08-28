@@ -11,9 +11,7 @@
             <input
               type="text"
               class="form-control"
-              v-model="input.userId"
-              name
-              id
+              v-model="input.id"
               aria-describedby="helpId"
               placeholder
               readonly
@@ -24,9 +22,7 @@
             <input
               type="text"
               class="form-control"
-              v-model="input.fullName"
-              name
-              id
+              v-model="input.name"
               aria-describedby="helpId"
               placeholder
             />
@@ -36,9 +32,7 @@
             <input
               type="text"
               class="form-control"
-              v-model="input.birthPlace"
-              name
-              id
+              v-model="input.birth_place"
               aria-describedby="helpId"
               placeholder
             />
@@ -48,9 +42,7 @@
             <input
               type="text"
               class="form-control"
-              v-model="input.phoneNumber"
-              name
-              id
+              v-model="input.phone_number"
               aria-describedby="helpId"
               placeholder
             />
@@ -63,8 +55,6 @@
               type="text"
               class="form-control"
               v-model="input.username"
-              name
-              id
               aria-describedby="helpId"
               placeholder
               readonly
@@ -75,9 +65,7 @@
             <input
               type="text"
               class="form-control"
-              v-model="input.birthDate"
-              name
-              id
+              v-model="input.birth_day"
               aria-describedby="helpId"
               placeholder
             />
@@ -88,8 +76,6 @@
               type="text"
               class="form-control"
               v-model="input.department"
-              name
-              id
               aria-describedby="helpId"
               placeholder
             />
@@ -100,8 +86,6 @@
               type="text"
               class="form-control"
               v-model="input.email"
-              name
-              id
               aria-describedby="helpId"
               placeholder
             />
@@ -125,13 +109,13 @@ export default {
   data() {
     return {
       input: {
-        userId: this.user.userId,
+        id: this.user.id,
         username: this.user.username,
-        fullName: this.user.fullName,
-        birthDate: this.user.birthDate,
-        birthPlace: this.user.birthPlace,
+        name: this.user.name,
+        birth_day: this.user.birth_day,
+        birth_place: this.user.birth_place,
         department: this.user.department,
-        phoneNumber: this.user.phoneNumber,
+        phone_number: this.user.phone_number,
         email: this.user.email,
       },
     };

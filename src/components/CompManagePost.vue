@@ -8,7 +8,7 @@
         
       </div>
       <div class="col-md-3">
-        <h1 class="page-header" style="float: right">Tổng : {{user.myPost.length}} bài viết</h1>
+        <h1 class="page-header" style="float: right">Tổng : {{user.list_posts.length}} bài viết</h1>
       </div>
       
       
@@ -64,7 +64,7 @@ export default {
   computed:{
     getPost:function(){
       
-      return this.user.myPost.filter((post,index)=>index >= ((this.selectedPagination-1)*4) && index < (this.selectedPagination*4));
+      return this.user.list_posts.filter((post,index)=>index >= ((this.selectedPagination-1)*4) && index < (this.selectedPagination*4));
     }
   }
 };

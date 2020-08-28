@@ -28,25 +28,37 @@
           <p class="card-text" style="text-align: justify;">{{post.content}}</p>
         </div>
 
-        <a name id class="btn btn-success" href="#" role="button">Đọc thêm</a>
+        <a name id class="btn btn-success" v-on:click="showPost()" href="#" role="button">Đọc thêm</a>
       </div>
     </div>
     <br />
   </div>
 </template>
 <script>
+import { EventBus } from './bus/event-bus.js';
+
 export default {
   name: "user",
   props: {
     post: Object,
   },
   data() {
-    return {};
+    return {
+      clickCount: 0
+    };
   },
   methods: {
-    showPost() {},
+    showPost() {
+      console.log("press button");
+      var num  = this.clickCount++;
+      EventBus.$emit('i-got-clicked', num);
+      this.$store.commit('increment')
+      console.log('=>>> from ' + this.$store.state.count);
+    },
     deletePost: function (post) {
-      this.$emit("deletePost", post);
+      //this.$emit("deletePost", post);
+      
+      EventBus.$emit('deletePortByEB', post);
     },
   },
 };

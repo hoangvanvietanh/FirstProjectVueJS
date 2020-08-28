@@ -14,9 +14,9 @@
         <a style="margin-top:20px;">hito fake</a>
       </div>
       <div class="list-group list-group-flush">
-        <button id="btn2" class="list-group-item list-group-item-action textColor btn-hide-sidebar">
+        <a id="btn2" href="#" class="list-group-item list-group-item-action textColor btn-hide-sidebar">
           <font-awesome-icon icon="chevron-left" />
-        </button>
+        </a>
         <!-- <a
           class="list-group-item list-group-item-action bg-light textColor"
           href="#"
@@ -89,12 +89,13 @@ background:#39b39a;height: 100px;text-align: center;
   border-color: rgb(57, 179, 154) !important;
 }
 a.bg-light:hover,
-a.bg-light:focus,
-button.bg-light:hover,
-button.btn-hide-sidebar:hover,
-button.btn-hide-sidebar:focus
-button.bg-light:focus {
+a.bg-light:focus
+ {
   background-color: rgb(57, 179, 154) !important;
+  cursor: pointer;
+}
+a.btn-hide-sidebar:hover{
+  background-color: rgb(12, 173, 141) !important;
   cursor: pointer;
 }
 </style>
