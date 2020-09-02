@@ -27,7 +27,8 @@ export default {
   },
   props: {
     user: Object,
-    selectedPagination: Number
+    selectedPagination: Number,
+    list_posts: Array
   },
 
   methods: {
@@ -40,20 +41,25 @@ export default {
       }
     },
     setRightPaginate: function () {
-      if (this.$parent.selectedPagination < this.user.list_posts.length / 4) {
-        this.$parent.selectedPagination++;
+      if (this.list_posts) {
+        if (this.$parent.selectedPagination < Math.ceil(this.list_posts.length / 4)) {
+          this.$parent.selectedPagination++;
+        }
       }
     },
   },
-  computed:{
-    numberOfPages(){
-      console.log(this.user.list_posts.length)
-      if(this.user.list_posts.length < 4){
-        return 1;
-      }
-        return this.user.list_posts.length / 4;
-    }
-  }
+  computed: {
+    numberOfPages() {
+      //console.log("=====>"+this.list_posts.length / 4)
+  
+        if (this.list_posts.length < 4) {
+          return 1;
+        }
+        
+        return Math.ceil(this.list_posts.length / 4);
+
+    },
+  },
 };
 </script>
 <style>

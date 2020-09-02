@@ -2,7 +2,7 @@
   <div class="header">
     <!-- Page Content -->
     <div id="page-content-wrapper" style="with:100%">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+      <nav class="navbar navbar-expand-lg navbar-light bg-dark border-bottom">
         <button
           class="btn btn-primary hiddenButton"
           style="background-color:rgb(57, 179, 154);border:none"
@@ -26,44 +26,81 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             <div class="pull-left">
-              <p class="info-user">Xin chào, {{this.user.name}}</p>
-              <p class="info-user">{{this.user.department}}</p>
+              <p class="info-user">Xin chào, {{this.$store.getters['user/getUser'].name}}</p>
+              <p class="info-user">{{this.$store.getters['user/getUser'].department}}</p>
             </div>
             <li class="nav-item img-profile">
               <img
                 style="border-radius:50%"
-                v-if="this.user.url_image != ``"
-                v-bind:src="this.user.url_image"
-                width="45px"
-                height="45px"
-                alt="avatar"
-              />
-              <img
-                style="border-radius:50%"
-                v-else
-                src="/gai.jpg"
+                v-bind:src="url_user_image"
                 width="45px"
                 height="45px"
                 alt="avatar"
               />
             </li>
-            <b-dropdown  no-caret>
-              <div  slot="button-content" class="icon-dropdown">
+            <b-dropdown block class="m-2" no-caret>
+              <div slot="button-content" class="icon-dropdown">
                 <font-awesome-icon icon="angle-down" />
-              </div >
-              <b-dropdown-item href="#">Thông tin cá nhân</b-dropdown-item>
-              <hr>
-              <b-dropdown-item href="#">Đăng xuất</b-dropdown-item>
+              </div>
+              <div class="row" style="width:100%">
+                <div class="col-sm-3">
+                  <a class="btn" href="#">
+                    <font-awesome-icon :style="{ color: 'green', }" icon="circle-notch" />
+                  </a>
+                </div>
+                <div class="col-sm-3">
+                  <a class="btn" href="#">
+                    <font-awesome-icon :style="{ color: 'red', }" icon="circle-notch" />
+                  </a>
+                </div>
+                <div class="col-sm-3">
+                  <a class="btn" href="#">
+                    <font-awesome-icon :style="{ color: 'purple', }" icon="circle-notch" />
+                  </a>
+                </div>
+                <div class="col-sm-3">
+                  <a class="btn" href="#">
+                    <font-awesome-icon :style="{ color: 'yellow', }" icon="circle-notch" />
+                  </a>
+                </div>
+                <div class="col-sm-3">
+                  <a class="btn" href="#">
+                    <font-awesome-icon :style="{ color: 'pink', }" icon="circle-notch" />
+                  </a>
+                </div>
+                <div class="col-sm-3">
+                  <a class="btn" href="#">
+                    <font-awesome-icon :style="{ color: 'orange', }" icon="circle-notch" />
+                  </a>
+                </div>
+                <div class="col-sm-3">
+                  <a class="btn" href="#">
+                    <font-awesome-icon :style="{ color: 'gray', }" icon="circle-notch" />
+                  </a>
+                </div>
+                <div class="col-sm-3">
+                  <a class="btn" href="#">
+                    <font-awesome-icon :style="{ color: 'brown', }" icon="circle-notch" />
+                  </a>
+                </div>
+              </div>
+
+              <hr />
+              <b-dropdown-item v-on:click="logout" href="#">Logout</b-dropdown-item>
             </b-dropdown>
           </ul>
         </div>
       </nav>
 
       <div class="container-fluid" style="overflow: auto;height:80vh;background-color:white">
-        <CompHome v-if="itemActive === 0" />
+        <transition name="fade" mode="out-in">
+        <router-view v-bind:list_posts="list_posts" v-bind:user="user" v-on:deletePost="deletePost" v-on:deletePartner="deletePartner" v-on:updateInfoUser="updateInfoUser" ></router-view>
+        </transition>
+        <!-- <CompHome v-if="itemActive === 0" />
         <CompManagePost
           v-on:deletePost="deletePost"
           v-bind:user="user"
+          v-bind:list_posts="list_posts"
           v-else-if="itemActive === 1"
         />
         <CompManageTeam
@@ -75,34 +112,37 @@
           v-on:updateInfoUser="updateInfoUser"
           v-bind:user="user"
           v-else-if="itemActive === 3"
-        />
+        /> -->
       </div>
     </div>
     <!-- /#page-content-wrapper -->
-    <CompFooter />
+    <div v-if="authenticated == true">
+      <CompFooter />
+    </div>
+    
   </div>
-  
 </template>
 <script>
-import CompHome from "./CompHome.vue";
-import CompManagePost from "./CompManagePost.vue";
-import CompManageTeam from "./CompManageTeam.vue";
-import CompInfoUser from "./CompInfoUser.vue";
+// import CompHome from "./CompHome.vue";
+// import CompManagePost from "./CompManagePost.vue";
+// import CompManageTeam from "./CompManageTeam.vue";
+// import CompInfoUser from "./CompInfoUser.vue";
 import CompFooter from "./CompFooter.vue";
+import { EventBus } from "./bus/event-bus.js";
+import { mapGetters, mapState } from 'vuex'
 import $ from "jquery";
 
 export default {
   name: "CompBody",
   components: {
-    CompHome,
-    CompManagePost,
-    CompManageTeam,
-    CompInfoUser,
+    // CompHome,
+    // CompManagePost,
+    // CompManageTeam,
+    // CompInfoUser,
     CompFooter,
   },
   mounted() {
     $("#menu-toggle").click(function (e) {
-      console.log("Bam ne");
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
       $("#menu-toggle").removeClass("showButton");
@@ -112,10 +152,10 @@ export default {
       $("#wrapper").toggleClass("toggled");
       $("#menu-toggle").addClass("showButton");
     });
+    
   },
   methods: {
     deletePartner: function (e) {
-      console.log("CompBody", e);
       this.$emit("deletePartner", e);
     },
     updateInfoUser: function (e) {
@@ -124,10 +164,30 @@ export default {
     deletePost: function (e) {
       this.$emit("deletePost", e);
     },
+    logout() {
+      EventBus.$emit("logout");
+    },
   },
+  computed: {
+    url_user_image() {
+      if (this.user.url_image) {
+        return this.user.url_image;
+      } else {
+        return "/gai.jpg";
+      }
+    },
+    ...mapState({
+      checkAuthenticated: state => state.user.authenticated
+    }),
+    ...mapGetters('user', {
+      authenticated: 'getUthenticatedStatus',
+    }),
+  },
+  
   props: {
     user: Object,
     itemActive: Number,
+    list_posts: Array
   },
   data() {
     return {};
@@ -135,7 +195,7 @@ export default {
 };
 </script>
 <style>
-.dropdown-toggle-no-caret{
+.dropdown-toggle-no-caret {
   background-color: #28353b !important;
   border: none;
 }
@@ -175,5 +235,17 @@ a.icon-dropdown:hover {
 }
 .textColor {
   color: whitesmoke !important;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 0.3s;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0
 }
 </style>

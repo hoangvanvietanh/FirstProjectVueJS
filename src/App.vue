@@ -7,12 +7,17 @@
         v-on:updateInfoUser="updateInfoUser"
         v-on:deletePost="deletePost"
         v-bind:user="user"
+        v-bind:list_posts="list_posts"
         v-bind:itemActive="itemActive"
       />
-      
     </div>
-    <div v-else>
-      <CompLogin v-on:login="login" />
+    <div v-if="!authenticated && !checkToken">
+      <div v-if="isGuest" style="background-color:white;padding:50px">
+        <CompDocuments />
+      </div>
+      <div v-else>
+        <CompLogin v-on:login="login" />
+      </div>
     </div>
   </div>
 </template>
@@ -20,11 +25,13 @@
 <script>
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+import CompDocuments from "./components/CompDocuments.vue";
 import CompSidebar from "./components/CompSidebar.vue";
 import CompBody from "./components/CompBody.vue";
 import CompLogin from "./components/CompLogin.vue";
-import { EventBus } from './components/bus/event-bus.js';
-import axios from "axios";
+import { EventBus } from "./components/bus/event-bus.js";
+import hito_api from "./api/hito.js";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "App",
@@ -32,47 +39,93 @@ export default {
     CompBody,
     CompSidebar,
     CompLogin,
+    CompDocuments,
   },
-  mounted() {
-    
-  },
+  mounted() {},
   created() {
+    // Listen for the i-got-clicked event and its payload.
+    EventBus.$on("i-got-clicked", (clickCount) => {
+      console.log(`Oh, that's nice. It's gotten ${clickCount} clicks! :)`);
+    });
+    EventBus.$on("deletePostByEB", (post) => {
+      console.log(this.user);
+      this.deletePost(post);
+    });
 
-// Listen for the i-got-clicked event and its payload.
-EventBus.$on('i-got-clicked', clickCount => {
-  console.log(`Oh, that's nice. It's gotten ${clickCount} clicks! :)`)
-});
-EventBus.$on('deletePortByEB', post => {
-  this.deletePost(post);
-});
+    EventBus.$on("createPost", (post) => {
+      this.createPost(post, this.token);
+    });
 
-    // var apiToken = localStorage.getItem("apiToken");
-    //   if (apiToken) {
-    //     this.token = apiToken;
-    //   };
-    // this.$bus.on('increaseCounter', value => {
-    //             this.counter = value
-    //         })
+    EventBus.$on("setGuest", (isGuest) => {
+      this.setGuest(isGuest);
+    });
+
+    EventBus.$on("registerUser", (user) => {
+      this.registerUser(user);
+    });
+    EventBus.$on("logout", () => {
+      localStorage.clear();
+      this.authenticated = false;
+      this.$router.push("/");
+    });
+
+    var apiToken = localStorage.getItem("apiToken");
+    if(apiToken){this.token = apiToken}
+    this.getUserLoginAPI(apiToken);
   },
   computed: {
-    // checkApiToken() {
-    //   var apiToken = localStorage.getItem("apiToken");
-    //   if (apiToken) {
-    //     //this.token = apiToken;
-    //     this.authenticated = true;
-    //   }
-    //   else{
-    //     this.authenticated = false;
-    //   }
-      
-    // },
+    checkToken() {
+      if (localStorage.getItem("apiToken")) {
+        return true;
+      }
+      return false;
+    },
+    ...mapState({
+    store_user: state => state.user.user
+  }),
   },
+
   methods: {
-    increaseCounter(){
+    setGuest(isGuest) {
+      this.isGuest = isGuest;
+    },
+    createPost(post, token) {
+      //console.log(post)
+      hito_api.createPost(post, token, (value) => {
+        //console.log(value.data.data);
+        this.list_posts.push(value.data.data);
+      });
+    },
+    getUserLoginAPI(apiToken) {
+      if (apiToken) {
+        this.token = apiToken;
+        hito_api.getUserLogin(apiToken, (value) => {
+          //this.user = value.data.user;
+          //console.log("--->"+value.data.user)
+          this.getUserLogin(value.data.user);
+          this.authenticated = true;
+          hito_api.getListPosts(apiToken, (value) => {
+            this.list_posts = value.data.list_post;
+          });
+        });
+      }
+    },
+    registerUser(user) {
+      hito_api.register(user, (value) => {
+        this.token = value.data.data.token;
+        localStorage.setItem("apiToken", this.token);
+        this.getUserLogin(this.token);
+      });
+    },
+    increaseCounter() {
       console.log("Nhận nè");
     },
+    logout() {
+      this.authenticated = false;
+      localStorage.clear();
+      this.$router.push("/");
+    },
     deletePartner: function (e) {
-      //console.log("App.vue", e);
       var indexPartnerDelete = -1;
       this.user.list_collaborators.forEach((user, index) => {
         if (e === user.id) {
@@ -84,74 +137,59 @@ EventBus.$on('deletePortByEB', post => {
       }
     },
     updateInfoUser: function (e) {
-      console.log("updated", e);
-      //this.user.id = e.id;
-      //this.user.username = e.username;
       this.user.name = e.name;
       this.user.birth_day = e.birth_day;
       this.user.birth_place = e.birth_place;
       this.user.department = e.department;
       this.user.phone_number = e.phone_number;
       this.user.email = e.email;
+      hito_api.updateUser(this.user, this.token);
     },
     deletePost: function (e) {
-      //console.log("app.vue", e);
       var indexPostSelected = -1;
-      this.user.list_posts.forEach((post, index) => {
+      var postId = -1;
+      this.list_posts.forEach((post, index) => {
         if (post.id === e.id) {
+          postId = post.id;
           indexPostSelected = index;
         }
       });
       if (indexPostSelected != -1) {
-        this.user.list_posts.splice(indexPostSelected, 1);
+        hito_api.deletePost(postId, this.token);
+        this.list_posts.splice(indexPostSelected, 1);
       }
     },
-    async login(e) {
-     //console.log(e)
-      var userData = {};
-      var uname = e.username;
-      var pass = e.password;
-      await axios
-        .post(`http://127.0.0.1:8000/api/login?email=${uname}&password=${pass}`)
-        .then(async (response) => {
-          console.log(response)
-          this.token = response.data.data.token;
-          localStorage.setItem('apiToken', this.token);
-          this.user.name = response.data.data.user.name;
-          userData = response.data.data.user;
-          this.getDataListPosts(userData);
-          this.authenticated = true;
-        })
-        .catch((e) => {
-          console.log("Xác thực lỗi" + e);
+    ...mapActions("user", ["getUserLogin"]),
+    login(e) {
+      var user_login = {};
+      user_login.username = e.username;
+      user_login.password = e.password;
+
+      hito_api.login(user_login, (value) => {
+        this.token = value.data.token;
+        this.authenticated = value.success;
+        localStorage.setItem("apiToken", this.token);
+        this.user = value.data.user;
+        this.getUserLogin(value.data.user);
+        hito_api.getListPosts(value.data.token, (value) => {
+          console.log(value);
+          this.list_posts = value.data.list_post;
+          this.$router.push("home");
         });
+      });
     },
-    async getDataListPosts(userData) {
-      const AuthStr = "Bearer ".concat(this.token);
-      //console.log(this.token)
-      await axios
-        .get("http://127.0.0.1:8000/api/posts", {
-          headers: { Accept: "application/json", Authorization: AuthStr },
-        })
-        .then((response) => {
-          this.user.list_posts = response.data.list_post;
-          userData.list_posts = response.data.list_post;
-          //console.log(userData);
-          this.user = userData;
-        })
-        .catch((error) => {
-          console.log("Lấy bài viết lỗi " + error);
-        });
-    },
+    
   },
   data() {
     return {
       posts: [],
       token: "",
       user: {},
+      list_posts: [],
       itemActive: 0,
-      authenticated : false,
-      counter: 0
+      authenticated: false,
+      isGuest: false,
+      counter: 0,
     };
   },
 };
@@ -159,7 +197,7 @@ EventBus.$on('deletePortByEB', post => {
 
 <style>
 #app {
-  font-family: Roboto,sans-serif;
+  font-family: Roboto, sans-serif;
 }
 #wrapper {
   overflow-x: hidden;
@@ -223,5 +261,16 @@ EventBus.$on('deletePortByEB', post => {
 }
 [v-cloak]::before {
   content: "loading...";
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 0.3s;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
 }
 </style>
