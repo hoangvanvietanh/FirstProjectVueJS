@@ -1,10 +1,11 @@
 import axios from "axios";
- 
+ var domain = "https://hito-fake-server.herokuapp.com";
+
  function login(user_login, onSuccess, onError) {
     var uname = user_login.username;
     var pass = user_login.password;
     axios
-        .post(`http://127.0.0.1:8000/api/login?email=${uname}&password=${pass}`)
+        .post(`${domain}/api/login?email=${uname}&password=${pass}`)
         .then((success, error) => {
             onSuccess(success.data),
             onError(error)
@@ -17,7 +18,7 @@ import axios from "axios";
  function getListPosts(token, onSuccess, onError) {
     var AuthStr = "Bearer ".concat(token);
      axios
-        .get("http://127.0.0.1:8000/api/posts", {
+        .get(`${domain}/api/posts`, {
             headers: { Accept: "application/json", Authorization: AuthStr },
         })
         .then((success, error) => {
@@ -32,7 +33,7 @@ import axios from "axios";
 function getUserLogin(token, onSuccess, onError) {
     var AuthStr = "Bearer ".concat(token);
      axios
-        .get("http://127.0.0.1:8000/api/users", {
+        .get(`${domain}/api/users`, {
             headers: { Accept: "application/json", Authorization: AuthStr },
         })
         .then((success, error) => {
@@ -52,7 +53,7 @@ function register(user, onSuccess, onError) {
     bodyFormData.append('c_password', user.c_password);
     bodyFormData.append('email', user.email);
      axios
-        .post("http://127.0.0.1:8000/api/register", bodyFormData)
+        .post(`${domain}/api/register`, bodyFormData)
         .then((success, error) => {
             onSuccess(success),
             onError(error)
@@ -74,7 +75,7 @@ function updateUser(user, token, onSuccess, onError) {
     bodyFormData.append('birth_day', user.birth_day);
     bodyFormData.append('birth_place', user.birth_place);
      axios
-        .post(`http://127.0.0.1:8000/api/userupdate/${user.id}`, bodyFormData,{
+        .post(`${domain}/api/userupdate/${user.id}`, bodyFormData,{
             headers: { Accept: "application/json", Authorization: AuthStr},
         })
         .then((success, error) => {
@@ -97,7 +98,7 @@ function createPost(post, token, onSuccess, onError) {
     bodyFormData.append('status', post.status);
 
      axios
-        .post("http://127.0.0.1:8000/api/createpost", bodyFormData,{
+        .post(`${domain}/api/createpost`, bodyFormData,{
             headers: { Accept: "application/json", Authorization: AuthStr},
         })
         .then((success, error) => {
@@ -112,7 +113,7 @@ function createPost(post, token, onSuccess, onError) {
 function deletePost(idPost, token, onSuccess, onError) {
     var AuthStr = "Bearer ".concat(token);
      axios
-        .delete(`http://127.0.0.1:8000/api/deletepost/${idPost}`,{
+        .delete(`${domain}/api/deletepost/${idPost}`,{
             headers: { Accept: "application/json", Authorization: AuthStr},
         })
         .then((success, error) => {
