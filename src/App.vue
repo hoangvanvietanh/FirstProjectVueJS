@@ -136,7 +136,7 @@ export default {
         EventBus.$emit("showMessage","Tạo tài khoản thành công");
       },(error)=>{
         console.log(error)
-         EventBus.$emit("showMessage","Tạo tài khoản thất bại");
+         EventBus.$emit("showMessage","Tạo tài khoản thất bại, kiểm tra lại username hoặc email");
       });
     },
     increaseCounter() {
