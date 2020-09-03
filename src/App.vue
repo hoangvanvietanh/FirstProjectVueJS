@@ -133,6 +133,10 @@ export default {
         this.token = value.data.data.token;
         localStorage.setItem("apiToken", this.token);
         this.getUserLoginAPI(this.token);
+        EventBus.$emit("showMessage","Tạo tài khoản thành công");
+      },(error)=>{
+        console.log(error)
+         EventBus.$emit("showMessage","Tạo tài khoản thất bại");
       });
     },
     increaseCounter() {
