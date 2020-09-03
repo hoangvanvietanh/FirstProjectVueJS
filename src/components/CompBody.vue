@@ -190,7 +190,9 @@ export default {
     list_posts: Array
   },
   data() {
-    return {};
+    return {
+      
+    };
   },
 };
 </script>

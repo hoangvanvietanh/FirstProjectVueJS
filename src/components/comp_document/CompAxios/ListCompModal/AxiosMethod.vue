@@ -5,8 +5,13 @@
       <div class="d-block text-left">
         <h5>Kết quả demo</h5>
         <p>
-          {{user}}
+          {{getvalue}}
         </p>
+        <div class="form-group">
+          <input type="text"
+            class="form-control" v-model="propertyUser" aria-describedby="helpId" placeholder="Nhập thuộc tính user muốn hiện">
+        </div>
+        <a href="data/user.json" target="_blank">View JSON file</a>
         <hr />
         <p>Code</p>
         <a href="document_image/axios/1.PNG" target="_blank">
@@ -32,13 +37,46 @@ export default {
     return {
        user: null,
       loading: true,
-      errored: false
+      errored: false,
+      propertyUser:"",
+      showValue:""
     };
   },
   mounted(){
      axios_api.getUser(value=>{
        this.user = value.data.data.user
      })   
+  },
+  computed:{
+    getvalue(){
+      if(this.propertyUser == "name"){
+        return this.user.name;
+      }
+      else if(this.propertyUser == "gender"){
+        return this.user.gender;
+      }
+      else if(this.propertyUser == "address"){
+        return this.user.address;
+      }
+      else if(this.propertyUser == "email"){
+        return this.user.email;
+      }
+      else if(this.propertyUser == "username"){
+        return this.user.username;
+      }
+      else if(this.propertyUser == "birth_day"){
+        return this.user.birth_day;
+      }
+      else if(this.propertyUser == "birth_place"){
+        return this.user.birth_place;
+      }
+      else if(this.propertyUser == "phone_number"){
+        return this.user.phone_number;
+      }else if(this.propertyUser == "department"){
+        return this.user.department;
+      }
+      return this.user;
+    }
   },
   methods:{
     //   getUser(){

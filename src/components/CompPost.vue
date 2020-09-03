@@ -60,7 +60,11 @@ export default {
       //this.$emit("deletePost", post);
 
       EventBus.$emit("deletePostByEB", post);
+      this.showAlert(`Bài viết "${post.title}" đã được xóa`);
     },
+        showAlert(message){
+      EventBus.$emit("showMessage",message);
+    }
   },
   computed: {
     convertDataTime() {

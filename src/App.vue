@@ -11,6 +11,15 @@
         v-bind:itemActive="itemActive"
       />
     </div>
+    <b-alert
+      class="fixed-top"
+      style="width:50%;left:25%"
+      :show="dismissCountDown"
+      dismissible
+      variant="success"
+      @dismissed="dismissCountDown=0"
+      @dismiss-count-down="countDownChanged"
+    >{{message}}, thông báo tắt trong {{ dismissCountDown }} s</b-alert>
     <div v-if="!authenticated && !checkToken">
       <div v-if="isGuest" style="background-color:white;padding:50px">
         <CompDocuments />
@@ -47,6 +56,12 @@ export default {
     EventBus.$on("i-got-clicked", (clickCount) => {
       console.log(`Oh, that's nice. It's gotten ${clickCount} clicks! :)`);
     });
+
+    EventBus.$on("showMessage", (message) => {
+      this.message = message
+      this.showAlert();
+    });
+
     EventBus.$on("deletePostByEB", (post) => {
       console.log(this.user);
       this.deletePost(post);
@@ -66,11 +81,14 @@ export default {
     EventBus.$on("logout", () => {
       localStorage.clear();
       this.authenticated = false;
-      this.$router.push("/");
+      //this.$router.push("/");
+      window.location.href = "/"
     });
 
     var apiToken = localStorage.getItem("apiToken");
-    if(apiToken){this.token = apiToken}
+    if (apiToken) {
+      this.token = apiToken;
+    }
     this.getUserLoginAPI(apiToken);
   },
   computed: {
@@ -81,8 +99,8 @@ export default {
       return false;
     },
     ...mapState({
-    store_user: state => state.user.user
-  }),
+      store_user: (state) => state.user.user,
+    }),
   },
 
   methods: {
@@ -178,7 +196,12 @@ export default {
         });
       });
     },
-    
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+    },
+    showAlert() {
+      this.dismissCountDown = this.dismissSecs;
+    },
   },
   data() {
     return {
@@ -190,6 +213,9 @@ export default {
       authenticated: false,
       isGuest: false,
       counter: 0,
+      dismissSecs: 5,
+      dismissCountDown: 0,
+      message: ""
     };
   },
 };

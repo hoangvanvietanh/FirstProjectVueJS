@@ -11,7 +11,9 @@
       </div>
       
       <div class="row">
-        
+        <div class="col-sm-2">
+          <a  style="width:100%" class="btn mt-2  btn-dark" href="diagram/webservice.html" role="button" target="_blank">WebService</a>
+        </div>
         <div class="col-sm-2">
           <a  style="width:100%" class="btn mt-2  btn-primary" href="diagram/restfull.html" role="button" target="_blank">RESTfull</a>
         </div>
@@ -31,7 +33,7 @@
             @click="$bvModal.show('bv-modal-slide-vuex')"
           >Vuex</b-button>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-12">
            
           <b-button
             class="mt-2 btn-danger"
