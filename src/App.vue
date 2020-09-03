@@ -132,7 +132,7 @@ export default {
       hito_api.register(user, (value) => {
         this.token = value.data.data.token;
         localStorage.setItem("apiToken", this.token);
-        this.getUserLogin(this.token);
+        this.getUserLoginAPI(this.token);
       });
     },
     increaseCounter() {
@@ -190,7 +190,7 @@ export default {
         this.user = value.data.user;
         this.getUserLogin(value.data.user);
         hito_api.getListPosts(value.data.token, (value) => {
-          console.log(value);
+          //console.log(value);
           this.list_posts = value.data.list_post;
           this.$router.push("home");
         });

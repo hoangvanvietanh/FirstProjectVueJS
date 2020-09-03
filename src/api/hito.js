@@ -89,7 +89,7 @@ function updateUser(user, token, onSuccess, onError) {
 
 function createPost(post, token, onSuccess, onError) {
     var AuthStr = "Bearer ".concat(token);
-    console.log(AuthStr)
+    //console.log(AuthStr)
     var bodyFormData = new FormData();
     bodyFormData.append('user_id', post.user_id);
     bodyFormData.append('title', post.title);
