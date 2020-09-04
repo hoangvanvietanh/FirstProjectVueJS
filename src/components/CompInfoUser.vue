@@ -86,9 +86,10 @@
             <input
               type="text"
               class="form-control"
-              v-model="input.email"
+              :value="input.email"
               aria-describedby="helpId"
               placeholder
+              readonly
             />
           </div>
         </div>

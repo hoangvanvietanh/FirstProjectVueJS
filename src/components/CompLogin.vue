@@ -99,58 +99,133 @@
           <label for>Full Name</label>
           <input
             type="text"
-            class="form-control"
+            :class="{'form-control isError': !validateName, 'form-control' : validateName}"
             v-model="userRegister.name"
             aria-describedby="helpId"
-            placeholder
+            placeholder="Nhập họ tên"
           />
+          <small
+            id="helpId"
+            class="form-text"
+            style="color: red"
+            v-if="userRegister.name.length == 0"
+          >Vui lòng nhập họ tên</small>
+          <small
+            id="helpId"
+            class="form-text"
+            style="color: red"
+            v-if="userRegister.name.length <= 5 && userRegister.name.length > 0"
+          >Họ tên phải nhiều hơn 5 kí tự</small>
+          <small
+            id="helpId"
+            class="form-text"
+            style="color: green"
+            v-if="userRegister.name.length > 5"
+          >Họ tên hợp lệ</small>
         </div>
         <div class="form-group">
           <label for>Username</label>
           <input
             type="text"
-            class="form-control"
+            :class="{'form-control isError': !validateUsername, 'form-control' : validateUsername}"
             v-model="userRegister.username"
             aria-describedby="helpId"
-            placeholder
+            placeholder="Nhập tài khoản đăng nhập"
           />
+          <small
+            id="helpId"
+            class="form-text"
+            style="color: red"
+            v-if="userRegister.username.length == 0"
+          >Vui lòng nhập tài khoản đăng nhập</small>
+          <small
+            id="helpId"
+            class="form-text"
+            style="color: red"
+            v-else-if="userRegister.username.length <= 5 && userRegister.username.length > 0"
+          >Họ tên phải nhiều hơn 5 kí tự</small>
+          <small
+            id="helpId"
+            class="form-text"
+            style="color: red"
+            v-else-if="!/^[a-zA-Z0-9_]{5,}[a-zA-Z]+[0-9]*$/.test(userRegister.username)"
+          >Tài khoản không được có khoảng trắng</small>
+          <small id="helpId" class="form-text" style="color: green" v-else>Họ tên hợp lệ</small>
         </div>
         <div class="form-group">
           <label for>Email</label>
           <input
             type="text"
-            class="form-control"
+            :class="{'form-control isError': !validateEmail, 'form-control' : validateEmail}"
             v-model="userRegister.email"
             aria-describedby="helpId"
-            placeholder
+            placeholder="Nhập email"
           />
+          <small
+            id="helpId"
+            class="form-text"
+            style="color: red"
+            v-if="userRegister.email.length == 0"
+          >Vui lòng nhập email</small>
+          <small
+            id="helpId"
+            class="form-text"
+            style="color: red"
+            v-else-if="!validateEmail"
+          >Email không hợp lệ</small>
+          <small id="helpId" class="form-text" style="color: green" v-else>Email hợp lệ</small>
         </div>
         <div class="form-group">
           <label for>Password</label>
           <input
             type="password"
-            class="form-control"
+            :class="{'form-control isError': !validatePassword, 'form-control' : validatePassword}"
             v-model="userRegister.password"
             aria-describedby="helpId"
-            placeholder
+            placeholder="Nhập mật khẩu"
           />
+          <small
+            id="helpId"
+            class="form-text"
+            style="color: red"
+            v-if="userRegister.password.length == 0"
+          >Vui lòng nhập mật khẩu</small>
+          <small
+            id="helpId"
+            class="form-text"
+            style="color: red"
+            v-else-if="userRegister.password.length <= 5"
+          >Mật khẩu phải dài hơn 5 kí tự</small>
+          <small id="helpId" class="form-text" style="color: green" v-else>Mật khẩu hợp lệ</small>
         </div>
         <div class="form-group">
           <label for>Repassword</label>
           <input
             type="password"
-            class="form-control"
+            :class="{'form-control isError': !validatePassword, 'form-control' : validatePassword}"
             v-model="userRegister.c_password"
             aria-describedby="helpId"
-            placeholder
+            placeholder="Nhập lại mật khẩu"
           />
+          <small
+            id="helpId"
+            class="form-text"
+            style="color: red"
+            v-if="!validatePassword && userRegister.c_password.length != 0"
+          >Mật khẩu không trùng khớp</small>
+          <small
+            id="helpId"
+            class="form-text"
+            style="color: green"
+            v-if="validatePassword && userRegister.c_password.length != 0"
+          >Mật khẩu trùng khớp</small>
         </div>
       </div>
       <div class="row">
         <div class="col-sm-6">
           <b-button
             class="mt-2 btn-success"
-            v-if="validateData == true"
+            v-if="validatePassword == true"
             block
             @click="registerAccount();$bvModal.hide('bv-modal-example')"
           >Submit</b-button>
@@ -193,16 +268,70 @@ export default {
     isGuest() {
       EventBus.$emit("setGuest", true);
     },
+    removeAccents(str) {
+      var AccentsMap = [
+        "aàảãáạăằẳẵắặâầẩẫấậ",
+        "AÀẢÃÁẠĂẰẲẴẮẶÂẦẨẪẤẬ",
+        "dđ",
+        "DĐ",
+        "eèẻẽéẹêềểễếệ",
+        "EÈẺẼÉẸÊỀỂỄẾỆ",
+        "iìỉĩíị",
+        "IÌỈĨÍỊ",
+        "oòỏõóọôồổỗốộơờởỡớợ",
+        "OÒỎÕÓỌÔỒỔỖỐỘƠỜỞỠỚỢ",
+        "uùủũúụưừửữứự",
+        "UÙỦŨÚỤƯỪỬỮỨỰ",
+        "yỳỷỹýỵ",
+        "YỲỶỸÝỴ",
+      ];
+      for (var i = 0; i < AccentsMap.length; i++) {
+        var re = new RegExp("[" + AccentsMap[i].substr(1) + "]", "g");
+        var char = AccentsMap[i][0];
+        str = str.replace(re, char);
+      }
+      return str;
+    },
   },
   computed: {
-    validateData() {
+    validatePassword() {
       if (
         this.userRegister.password == this.userRegister.c_password &&
-        this.userRegister.password != ""
+        this.userRegister.password != "" &&
+        this.validateEmail == true
       ) {
         return true;
       }
       return false;
+    },
+    validateEmail() {
+      if (
+        /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/.test(
+          this.userRegister.email
+        )
+      ) {
+        return true;
+      }
+      return false;
+    },
+    validateUsername() {
+      if (
+        (this.userRegister.username.length == 0 ||
+          this.userRegister.username.length <= 5) &&
+        !/\S/.test(this.userRegister.username)
+      ) {
+        return false;
+      }
+      return true;
+    },
+    validateName() {
+      if (
+        this.userRegister.name.length == 0 ||
+        this.userRegister.name.length <= 5
+      ) {
+        return false;
+      }
+      return true;
     },
   },
 };
@@ -254,5 +383,8 @@ export default {
   text-align: center;
   font-size: 14px;
   margin-top: 16px;
+}
+.isError {
+  border-color: red;
 }
 </style>
