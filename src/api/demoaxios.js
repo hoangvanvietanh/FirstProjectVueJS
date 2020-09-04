@@ -1,5 +1,5 @@
 import axios from "axios";
- var domain = "https://hito-fake-server.herokuapp.com";
+ var domain = "https://hito-fake.herokuapp.com";
 // var domain = "http://172.16.16.27:4000";
 function getUser( onSuccess, onError) {
      axios.
