@@ -28,7 +28,7 @@
         <CompLogin v-on:login="login" />
       </div>
     </div>
-    <CompLoading v-show="loading" />
+    <CompLoading v-show="loading || this.$store.getters['user/isLoading']" />
   </div>
 </template>
 
@@ -177,6 +177,7 @@ export default {
       }
     },
     updateInfoUser: function (e) {
+      console.log(e)
       this.loading = true;
       this.user.name = e.name;
       this.user.birth_day = e.birth_day;
@@ -184,7 +185,8 @@ export default {
       this.user.department = e.department;
       this.user.phone_number = e.phone_number;
       this.user.email = e.email;
-      hito_api.updateUser(this.user, this.token, () => {
+      hito_api.updateUser(this.user, this.token, (value) => {
+        console.log(value)
         this.loading = false;
       });
     },

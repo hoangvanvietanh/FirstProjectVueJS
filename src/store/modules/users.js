@@ -6,7 +6,8 @@ const state = () =>({
     user_login:{
         username: '',
         password: ''
-    }
+    },
+    loading : false
 })
 
 const getters = {
@@ -15,11 +16,16 @@ const getters = {
     },
     getUser:(state)=>{
         return state.user;
+    },
+    isLoading:(state)=>{
+        return state.loading;
     }
 }
 
 const actions = {
+    
     getUserLogin({ commit }, user) {
+        
         commit('setUser', user);
         //console.log(user);
             commit('setAuthenticated', true);
@@ -35,18 +41,21 @@ const actions = {
         commit('setAuthenticated', status);
     },
     updateUserInfo({commit, state}, userUpdate){
+        commit('setLoading');
         commit('updateUser', userUpdate);
-      hito_api.updateUser(state.user, localStorage.getItem('apiToken'));
+      hito_api.updateUser(state.user, localStorage.getItem('apiToken'),()=>{
+        commit('setLoading');
+      });
 
     }
-
-
-    
 }
 
 const mutations = {
     setUser(state, user){
         state.user = user;
+    },
+    setLoading(state){
+        state.loading = !state.loading;
     },
     setAuthenticated(state, status){
         state.authenticated = status;
