@@ -152,7 +152,7 @@
             class="mt-2 btn-success"
             v-if="validateData == true"
             block
-            @click="registerAccount()"
+            @click="registerAccount();$bvModal.hide('bv-modal-example')"
           >Submit</b-button>
         </div>
         <div class="col-sm-6">

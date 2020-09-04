@@ -8,7 +8,7 @@
           </div>
           <div class="col-md-7">
             <div class="row">
-              <p class="deleteMarginBottom">{{user.name}}</p>
+              <p class="deleteMarginBottom">{{this.$store.getters["user/getUser"].name}}</p>
             </div>
             <div class="row">
               <p class="deleteMarginBottom">

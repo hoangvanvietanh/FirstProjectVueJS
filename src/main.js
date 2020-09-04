@@ -14,6 +14,7 @@ import CompManageTeam from "./components/CompManageTeam.vue";
 import CompInfoUser from "./components/CompInfoUser.vue";
 import CompDocuments from "./components/CompDocuments.vue";
 import VueCarousel from 'vue-carousel';
+import loader from "vue-ui-preloader";
 
 library.add(faUserSecret, faChevronLeft,faBars, faAngleDown, faHome, faAddressCard,faTable,faUserTie,faKey,faCircleNotch,faFileWord,faTasks) 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
@@ -24,6 +25,7 @@ Vue.use(BootstrapVue)// Install BootstrapVue
 Vue.use(IconsPlugin)// Optionally install the BootstrapVue icon components plugin
 Vue.use(DropdownPlugin)
 Vue.use(VueCarousel);
+Vue.use(loader);
 // Đăng kí một directive tùy biến cấp toàn cục với tên là `v-focus`
 Vue.directive('focus', {
   // Khi phần tử liên quan được thêm vào DOM...
@@ -35,7 +37,7 @@ Vue.directive('focus', {
 
 const router = new VueRouter({
   routes: [
-    // { path: '/', name:'index' , component: CompLogin ,meta: { requireAuth: false }},
+    { path: '/#', redirect: '/home'},
     // { path: '/login',name:'login' ,component: CompLogin, meta: { requireAuth: false }},
     { path: '/home', name: 'home',component: CompHome,meta: { requireAuth: true } },
     { path: '/manage-post', name : 'manage-post',component: CompManagePost,meta: { requireAuth: true } },

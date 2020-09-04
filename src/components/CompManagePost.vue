@@ -120,11 +120,13 @@ export default {
     },
     createPost() {
       EventBus.$emit("createPost", this.input);
+      //console.log(this.input)
       this.showAlert(`Thêm bài viết "${this.input.title }" thành công`)
       this.input.title = "";
       (this.input.url_image = ""), (this.input.content = "");
     },
     setData() {
+      //console.log(this.list_posts)
       var countPost = this.list_posts.length;
       countPost++;
       this.input.title = "Bài viết số " + countPost;
@@ -148,7 +150,7 @@ export default {
         content: "",
         url_image: "",
         status: "default",
-        user_id: this.user.id,
+        user_id: this.$store.getters["user/getUser"].id,
       },
     };
   },

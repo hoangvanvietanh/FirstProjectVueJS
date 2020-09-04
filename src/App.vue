@@ -28,6 +28,7 @@
         <CompLogin v-on:login="login" />
       </div>
     </div>
+    <CompLoading v-show="loading" />
   </div>
 </template>
 
@@ -41,6 +42,7 @@ import CompLogin from "./components/CompLogin.vue";
 import { EventBus } from "./components/bus/event-bus.js";
 import hito_api from "./api/hito.js";
 import { mapActions, mapState } from "vuex";
+import CompLoading from "./components/CompLoading.vue";
 
 export default {
   name: "App",
@@ -49,6 +51,7 @@ export default {
     CompSidebar,
     CompLogin,
     CompDocuments,
+    CompLoading,
   },
   mounted() {},
   created() {
@@ -58,12 +61,12 @@ export default {
     });
 
     EventBus.$on("showMessage", (message) => {
-      this.message = message
+      this.message = message;
       this.showAlert();
     });
 
     EventBus.$on("deletePostByEB", (post) => {
-      console.log(this.user);
+      //console.log(this.user);
       this.deletePost(post);
     });
 
@@ -82,14 +85,14 @@ export default {
       localStorage.clear();
       this.authenticated = false;
       //this.$router.push("/");
-      window.location.href = "/"
+      window.location.href = "/";
     });
 
     var apiToken = localStorage.getItem("apiToken");
     if (apiToken) {
       this.token = apiToken;
+      this.getUserLoginAPI(apiToken);
     }
-    this.getUserLoginAPI(apiToken);
   },
   computed: {
     checkToken() {
@@ -108,36 +111,51 @@ export default {
       this.isGuest = isGuest;
     },
     createPost(post, token) {
-      //console.log(post)
+      this.loading = true;
+      //console.log(post);
+      //this.loading = true;
       hito_api.createPost(post, token, (value) => {
         //console.log(value.data.data);
         this.list_posts.push(value.data.data);
+        this.loading = false;
       });
     },
     getUserLoginAPI(apiToken) {
       if (apiToken) {
         this.token = apiToken;
+        this.loading = true;
+
         hito_api.getUserLogin(apiToken, (value) => {
           //this.user = value.data.user;
           //console.log("--->"+value.data.user)
           this.getUserLogin(value.data.user);
           this.authenticated = true;
-          hito_api.getListPosts(apiToken, (value) => {
-            this.list_posts = value.data.list_post;
-          });
+          hito_api.getListPosts(
+            apiToken,
+            (value) => {
+              this.list_posts = value.data.list_post;
+              this.loading = false;
+            },
+            () => {
+              this.loading = false;
+            }
+          );
         });
       }
     },
     registerUser(user) {
-      hito_api.register(user, (value) => {
-        this.token = value.data.data.token;
-        localStorage.setItem("apiToken", this.token);
-        this.getUserLoginAPI(this.token);
-        EventBus.$emit("showMessage","Tạo tài khoản thành công");
-      },(error)=>{
-        console.log(error)
-         EventBus.$emit("showMessage","Tạo tài khoản thất bại, kiểm tra lại username hoặc email");
-      });
+      this.loading = true;
+      hito_api.register(
+        user,
+        (value) => {
+          this.token = value.data.data.token;
+          localStorage.setItem("apiToken", this.token);
+          this.getUserLoginAPI(this.token);
+          this.loading = false;
+          this.$router.push('/home');
+          EventBus.$emit("showMessage", "Tạo tài khoản thành công");
+        }
+      );
     },
     increaseCounter() {
       console.log("Nhận nè");
@@ -159,17 +177,21 @@ export default {
       }
     },
     updateInfoUser: function (e) {
+      this.loading = true;
       this.user.name = e.name;
       this.user.birth_day = e.birth_day;
       this.user.birth_place = e.birth_place;
       this.user.department = e.department;
       this.user.phone_number = e.phone_number;
       this.user.email = e.email;
-      hito_api.updateUser(this.user, this.token);
+      hito_api.updateUser(this.user, this.token, () => {
+        this.loading = false;
+      });
     },
     deletePost: function (e) {
       var indexPostSelected = -1;
       var postId = -1;
+      this.loading = true;
       this.list_posts.forEach((post, index) => {
         if (post.id === e.id) {
           postId = post.id;
@@ -177,7 +199,10 @@ export default {
         }
       });
       if (indexPostSelected != -1) {
-        hito_api.deletePost(postId, this.token);
+        hito_api.deletePost(postId, this.token, () => {
+          this.loading = false;
+        });
+
         this.list_posts.splice(indexPostSelected, 1);
       }
     },
@@ -186,7 +211,8 @@ export default {
       var user_login = {};
       user_login.username = e.username;
       user_login.password = e.password;
-
+      this.loading = true;
+      //console.log("vào nè" + this.loading + e.username);
       hito_api.login(user_login, (value) => {
         this.token = value.data.token;
         this.authenticated = value.success;
@@ -196,6 +222,7 @@ export default {
         hito_api.getListPosts(value.data.token, (value) => {
           //console.log(value);
           this.list_posts = value.data.list_post;
+          this.loading = false;
           this.$router.push("home");
         });
       });
@@ -219,7 +246,8 @@ export default {
       counter: 0,
       dismissSecs: 5,
       dismissCountDown: 0,
-      message: ""
+      message: "",
+      loading: false,
     };
   },
 };

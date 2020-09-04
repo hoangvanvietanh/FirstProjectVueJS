@@ -1,6 +1,6 @@
 import axios from "axios";
  var domain = "https://hito-fake-server.herokuapp.com";
-
+// var domain = "http://127.0.0.1:8000";
  function login(user_login, onSuccess, onError) {
     var uname = user_login.username;
     var pass = user_login.password;
@@ -10,8 +10,13 @@ import axios from "axios";
             onSuccess(success.data),
             onError(error)
         })
-        .catch(() => {
-            //console.log(e);
+        .catch((error) => {
+            if(error){
+                if(error.response.data.success == false){
+                    window.location.href = "/";
+                }
+            }
+            
         });
 }
 
@@ -40,8 +45,13 @@ function getUserLogin(token, onSuccess, onError) {
             onSuccess(success),
             onError(error)
         })
-        .catch(() => {
-            //console.log(error);
+        .catch((error) => {
+            //console.log(error)
+            if(error.message.split(" ")[5] == "401"){
+                localStorage.clear();
+                window.location.href = "/";
+            }
+            //console.log();
         });
 }
 

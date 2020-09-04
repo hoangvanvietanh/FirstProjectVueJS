@@ -50,13 +50,14 @@ export default {
   },
   computed: {
     numberOfPages() {
-      //console.log("=====>"+this.list_posts.length / 4)
-  
-        if (this.list_posts.length < 4) {
+      //console.log("=====>"+this.list_posts.length )
+        if (this.list_posts.length <= 4) {
+          this.setActivePaginate(1);
           return 1;
         }
-        
-        return Math.ceil(this.list_posts.length / 4);
+        var caculatePage = Math.ceil(this.list_posts.length / 4);
+        this.setActivePaginate(caculatePage);
+        return caculatePage;
 
     },
   },
