@@ -26,6 +26,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             <div class="pull-left">
+              <p v-if="!check" style="color: white; cursor: pointer" v-b-tooltip.hover title="">Không có thông báo</p>
+               <p v-else v-b-tooltip.hover title="Cick to seen" style="color: white; cursor: pointer" @click="seen">Có thông báo</p>
+            </div>
+            <div class="pull-left">
               <p class="info-user">Xin chào, {{this.$store.getters['user/getUser'].name}}</p>
               <p class="info-user">{{this.$store.getters['user/getUser'].department}}</p>
             </div>
@@ -131,6 +135,7 @@ import CompFooter from "./CompFooter.vue";
 import { EventBus } from "./bus/event-bus.js";
 import { mapGetters, mapState } from 'vuex'
 import $ from "jquery";
+import {db} from '../firebase'
 
 export default {
   name: "CompBody",
@@ -152,7 +157,7 @@ export default {
       $("#wrapper").toggleClass("toggled");
       $("#menu-toggle").addClass("showButton");
     });
-    
+    this.checkData()
   },
   methods: {
     deletePartner: function (e) {
@@ -167,6 +172,20 @@ export default {
     logout() {
       EventBus.$emit("logout");
     },
+    checkData() {
+      var frm = this
+      db.collection("users").where("email", "==", "vietem3@gmail.com")
+          .onSnapshot(function(snapshot) {
+            snapshot.docChanges().forEach(function(change) {
+              if (change.type === "modified") {
+                frm.check = true
+              }
+            })
+          });
+    },
+    seen() {
+      this.check = false
+    }
   },
   computed: {
     url_user_image() {
@@ -181,7 +200,7 @@ export default {
     }),
     ...mapGetters('user', {
       authenticated: 'getUthenticatedStatus',
-    }),
+    })
   },
   
   props: {
@@ -191,7 +210,7 @@ export default {
   },
   data() {
     return {
-      
+      check : false
     };
   },
 };

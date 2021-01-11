@@ -15,6 +15,7 @@ import CompInfoUser from "./components/CompInfoUser.vue";
 import CompDocuments from "./components/CompDocuments.vue";
 import VueCarousel from 'vue-carousel';
 import loader from "vue-ui-preloader";
+import './firebase'
 
 library.add(faUserSecret, faChevronLeft,faBars, faAngleDown, faHome, faAddressCard,faTable,faUserTie,faKey,faCircleNotch,faFileWord,faTasks) 
 Vue.component('font-awesome-icon', FontAwesomeIcon)

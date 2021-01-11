@@ -1,12 +1,18 @@
 import axios from "axios";
- var domain = "https://hito-fake-server.herokuapp.com";
+import {db, firebase} from "../firebase";
+
+// var domain = "https://hito-fake-server.herokuapp.com";
 // var domain = "http://127.0.0.1:8000";
+var domain = "http://hito-fake.local";
  function login(user_login, onSuccess, onError) {
     var uname = user_login.username;
     var pass = user_login.password;
     axios
         .post(`${domain}/api/login?email=${uname}&password=${pass}`)
         .then((success, error) => {
+            firebase
+                .auth()
+                .signInWithEmailAndPassword(uname, pass)
             onSuccess(success.data),
             onError(error)
         })
@@ -62,14 +68,19 @@ function register(user, onSuccess, onError) {
     bodyFormData.append('password', user.password);
     bodyFormData.append('c_password', user.c_password);
     bodyFormData.append('email', user.email);
+
      axios
         .post(`${domain}/api/register`, bodyFormData)
         .then((success, error) => {
+            firebase.auth().createUserWithEmailAndPassword(user.email, user.password).then(x => {
+                console.log('Tạo tài khoản thành công', x)
+                db.collection("users").doc(user.email).set({notification: 0, email: user.email})
+            })
             onSuccess(success),
             onError(error)
         })
         .catch(() => {
-            //console.log(error);
+            console.log('vào đây');
         });
 }
 

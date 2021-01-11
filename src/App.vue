@@ -43,6 +43,7 @@ import { EventBus } from "./components/bus/event-bus.js";
 import hito_api from "./api/hito.js";
 import { mapActions, mapState } from "vuex";
 import CompLoading from "./components/CompLoading.vue";
+import {firebase} from './firebase'
 
 export default {
   name: "App",
@@ -161,6 +162,7 @@ export default {
       console.log("Nhận nè");
     },
     logout() {
+      firebase.logout()
       this.authenticated = false;
       localStorage.clear();
       this.$router.push("/");
