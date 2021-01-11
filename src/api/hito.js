@@ -1,9 +1,9 @@
 import axios from "axios";
 import {db, firebase} from "../firebase";
 
-// var domain = "https://hito-fake-server.herokuapp.com";
+ var domain = "https://hito-fake-server.herokuapp.com";
 // var domain = "http://127.0.0.1:8000";
-var domain = "http://hito-fake.local";
+//var domain = "http://hito-fake.local";
  function login(user_login, onSuccess, onError) {
     var uname = user_login.username;
     var pass = user_login.password;
