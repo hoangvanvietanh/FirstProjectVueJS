@@ -25,10 +25,17 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-            <div class="pull-left">
-              <p v-if="!check" style="color: white; cursor: pointer" v-b-tooltip.hover title="">Không có thông báo</p>
-               <p v-else v-b-tooltip.hover title="Cick to seen" style="color: white; cursor: pointer" @click="seen">Có thông báo</p>
-            </div>
+            <b-dropdown class="custom-notification">
+              <div slot="button-content" class="icon-dropdown">
+                <p class="title-notification" v-if="!check" style="color: white; cursor: pointer" v-b-tooltip.hover title="">Không có thông báo</p>
+                <p class="title-notification" v-else v-b-tooltip.hover title="Cick to seen" style="color: white; cursor: pointer" @click="seen">Có thông báo</p>
+              </div>
+              <div class="row" style="width:100%">
+                <div class="col-sm-12" v-for="(item, index) in list_posts" :key="index">
+                  <p>{{item.title}}</p>
+                </div>
+              </div>
+            </b-dropdown>
             <div class="pull-left">
               <p class="info-user">Xin chào, {{this.$store.getters['user/getUser'].name}}</p>
               <p class="info-user">{{this.$store.getters['user/getUser'].department}}</p>
@@ -174,7 +181,7 @@ export default {
     },
     checkData() {
       var frm = this
-      const email = localStorage.getItem('email')
+      const email = this.$store.getters['user/getUser'].email
       db.collection("users").where("email", "==", email)
           .onSnapshot(function(snapshot) {
             snapshot.docChanges().forEach(function(change) {
@@ -193,29 +200,36 @@ export default {
       if (!window.Notification) {
         console.log('Browser does not support notifications.');
       } else {
+
+        new Notification(this.$store.getters['user/getUser'].name + ' ơiiiiiiii!!!!', {
+          body: 'Bạn có một thông báo mới',
+          icon: 'http://hito.lampart-vn.com/static/imgs/Hito_Logo.jpg',
+        });
+
         // check if permission is already granted
-        if (Notification.permission === 'granted') {
-          // show notification here
-          new Notification('Hi there!', {
-            body: 'You have new notification',
-            icon: 'http://hito.lampart-vn.com/static/imgs/Hito_Logo.jpg',
-          });
-        } else {
-          // request permission from user
-          Notification.requestPermission().then(function (p) {
-            if (p === 'granted') {
-              // show notification here
-              new Notification('Hi there!', {
-                body: 'You have new notification',
-                icon: 'http://hito.lampart-vn.com/static/imgs/Hito_Logo.jpg',
-              });
-            } else {
-              console.log('User blocked notifications.');
-            }
-          }).catch(function (err) {
-            console.error(err);
-          });
-        }
+        // if (Notification.permission === 'granted') {
+        //   // show notification here
+        //   new Notification('Hi, '+this.$store.getters['user/getUser'].name, {
+        //     body: 'You have new notification',
+        //     icon: 'http://hito.lampart-vn.com/static/imgs/Hito_Logo.jpg',
+        //   });
+        // }
+        // else {
+        //   // request permission from user
+        //   Notification.requestPermission().then(function (p) {
+        //     if (p === 'granted') {
+        //       // show notification here
+        //       new Notification('Hi, '+this.$store.getters['user/getUser'].name, {
+        //         body: 'You have new notification',
+        //         icon: 'http://hito.lampart-vn.com/static/imgs/Hito_Logo.jpg',
+        //       });
+        //     } else {
+        //       console.log('User blocked notifications.');
+        //     }
+        //   }).catch(function (err) {
+        //     console.error(err);
+        //   });
+        // }
       }
     }
   },
@@ -248,6 +262,21 @@ export default {
 };
 </script>
 <style>
+.custom-notification button {
+  font-size: 0px;
+}
+.custom-notification ul {
+  padding: 0px;
+}
+.custom-notification ul .row{
+  margin: 0px;
+}
+.title-notification {
+  font-size: 18px;
+}
+</style>
+<style>
+
 .dropdown-toggle-no-caret {
   background-color: #28353b !important;
   border: none;
