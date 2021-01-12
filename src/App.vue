@@ -162,7 +162,7 @@ export default {
       console.log("Nhận nè");
     },
     logout() {
-      firebase.logout()
+      firebase.auth.logout()
       this.authenticated = false;
       localStorage.clear();
       this.$router.push("/");

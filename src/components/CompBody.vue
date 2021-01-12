@@ -174,10 +174,13 @@ export default {
     },
     checkData() {
       var frm = this
-      db.collection("users").where("email", "==", "vietem3@gmail.com")
+      const email = localStorage.getItem('email')
+      db.collection("users").where("email", "==", email)
           .onSnapshot(function(snapshot) {
             snapshot.docChanges().forEach(function(change) {
               if (change.type === "modified") {
+                console.log()
+                frm.notifyMe()
                 frm.check = true
               }
             })
@@ -185,6 +188,35 @@ export default {
     },
     seen() {
       this.check = false
+    },
+    notifyMe() {
+      if (!window.Notification) {
+        console.log('Browser does not support notifications.');
+      } else {
+        // check if permission is already granted
+        if (Notification.permission === 'granted') {
+          // show notification here
+          new Notification('Hi there!', {
+            body: 'You have new notification',
+            icon: 'http://hito.lampart-vn.com/static/imgs/Hito_Logo.jpg',
+          });
+        } else {
+          // request permission from user
+          Notification.requestPermission().then(function (p) {
+            if (p === 'granted') {
+              // show notification here
+              new Notification('Hi there!', {
+                body: 'You have new notification',
+                icon: 'http://hito.lampart-vn.com/static/imgs/Hito_Logo.jpg',
+              });
+            } else {
+              console.log('User blocked notifications.');
+            }
+          }).catch(function (err) {
+            console.error(err);
+          });
+        }
+      }
     }
   },
   computed: {
