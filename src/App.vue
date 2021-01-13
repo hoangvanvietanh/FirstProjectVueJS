@@ -82,6 +82,17 @@ export default {
     EventBus.$on("registerUser", (user) => {
       this.registerUser(user);
     });
+
+    EventBus.$on("getListPost", () => {
+      console.log('vào....')
+      this.loading = true;
+      hito_api.getListPosts(localStorage.getItem('apiToken'), (value) => {
+        //console.log(value);
+        this.list_posts = value.data.list_post;
+        this.loading = false;
+      });
+    });
+
     EventBus.$on("logout", () => {
       localStorage.clear();
       this.authenticated = false;

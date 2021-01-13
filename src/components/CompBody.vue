@@ -195,6 +195,7 @@ export default {
     },
     seen() {
       this.check = false
+      EventBus.$emit("getListPost")
     },
     notifyMe() {
       if (!window.Notification) {

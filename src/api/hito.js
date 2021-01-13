@@ -73,10 +73,8 @@ function register(user, onSuccess, onError) {
      axios
         .post(`${domain}/api/register`, bodyFormData)
         .then((success, error) => {
-            firebase.auth().createUserWithEmailAndPassword(user.email, user.password).then(x => {
-                console.log('Tạo tài khoản thành công', x)
-                db.collection("users").doc(user.email).set({notification: 0, email: user.email})
-            })
+            firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
+            db.collection("users").doc(user.email).set({notification: 0, email: user.email})
             onSuccess(success),
             onError(error)
         })
