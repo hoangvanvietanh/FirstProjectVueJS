@@ -181,8 +181,8 @@ export default {
     },
     checkData() {
       var frm = this
-      const email = this.$store.getters['user/getUser'].email
-      db.collection("users").where("email", "==", email)
+      const username = this.$store.getters['user/getUser'].username
+      db.collection("users").where("username", "==", username)
           .onSnapshot(function(snapshot) {
             snapshot.docChanges().forEach(function(change) {
               if (change.type === "modified") {

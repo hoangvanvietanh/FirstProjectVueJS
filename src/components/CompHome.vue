@@ -61,7 +61,7 @@ export default {
         content: this.selectedEmail,
         url_image: "http://hito.lampart-vn.com/static/imgs/Hito_Logo.jpg",
         status: "default",
-        user_id: 10,
+        username: this.selectedEmail,
       }
       EventBus.$emit("createPost", input);
       db.collection("users").doc(this.selectedEmail).update({

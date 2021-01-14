@@ -9,11 +9,11 @@ var domain = "http://hito-fake.local";
     var pass = user_login.password;
     localStorage.setItem('email', uname)
     axios
-        .post(`${domain}/api/login?email=${uname}&password=${pass}`)
+        .post(`${domain}/api/login?username=${uname}&password=${pass}`)
         .then((success, error) => {
             firebase
                 .auth()
-                .signInWithEmailAndPassword(uname, pass)
+                .signInWithEmailAndPassword(uname+'@gmail.com', pass)
             onSuccess(success.data),
             onError(error)
         })
@@ -73,8 +73,8 @@ function register(user, onSuccess, onError) {
      axios
         .post(`${domain}/api/register`, bodyFormData)
         .then((success, error) => {
-            firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
-            db.collection("users").doc(user.email).set({notification: 0, email: user.email})
+            firebase.auth().createUserWithEmailAndPassword(user.username+'@gmail.com', user.password)
+            db.collection("users").doc(user.username).set({notification: 0, username: user.username})
             onSuccess(success),
             onError(error)
         })
@@ -111,7 +111,7 @@ function createPost(post, token, onSuccess, onError) {
     var AuthStr = "Bearer ".concat(token);
     //console.log(AuthStr)
     var bodyFormData = new FormData();
-    bodyFormData.append('user_id', post.user_id);
+    bodyFormData.append('username', post.username);
     bodyFormData.append('title', post.title);
     bodyFormData.append('content', post.content);
     bodyFormData.append('url_image', post.url_image);

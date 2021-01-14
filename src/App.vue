@@ -127,8 +127,9 @@ export default {
       //console.log(post);
       //this.loading = true;
       hito_api.createPost(post, token, (value) => {
+        console.log(value)
         //console.log(value.data.data);
-        this.list_posts.push(value.data.data);
+        //this.list_posts.push(value.data.data);
         this.loading = false;
       });
     },
